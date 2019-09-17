@@ -7,21 +7,12 @@
      * If none of the specified keys are matched, the '*' key is used.
      * Commands without a category don't show up in the help menu.
      */
-    commands: [
-      {
+    commands: [{
         name: 'DuckDuckGo',
         key: '*',
         url: 'https://www.duckduckgo.com',
         search: '/?q={}',
         color: '#000',
-      },
-      {
-        category: 'Work',
-        name: 'Drive',
-        key: 'd',
-        url: 'https://drive.google.com',
-        search: '/drive/search?q={}',
-        color: 'linear-gradient(135deg, #4285f4, #4259f4)',
       },
       {
         category: 'Work',
@@ -33,19 +24,18 @@
       },
       {
         category: 'Work',
-        name: 'Keep',
-        key: 'k',
-        url: 'https://keep.google.com',
-        search: '/#search/text={}',
-        color: 'linear-gradient(135deg, #fca550, #fcd050)',
-      },	   
-	{
-		category: 'Work',
-		name: 'Gmail',
-		key: 'm',
-		url: 'https://mail.google.com',
-		color: 'linear-gradient(135deg, #404040, #404040)',
-	},	  
+        name: 'Gmail',
+        key: 'm',
+        url: 'https://mail.google.com',
+        color: 'linear-gradient(135deg, #404040, #404040)',
+      },
+      {
+        category: 'Work',
+        name: 'Notion',
+        key: 'n',
+        url: 'https://www.notion.so/',
+        color: '#fff',
+      },
       {
         category: 'Lurk',
         name: 'Hunt',
@@ -63,14 +53,6 @@
         color: 'linear-gradient(135deg, #5f99cf, #5f7dcf)',
       },
       {
-        category: 'Lurk',
-        name: 'Unsplash',
-        key: 'u',
-        url: 'https://unsplash.com/new',
-        search: '/search/{}',
-        color: '#000',
-      },
-      {
         category: 'Listen',
         name: 'SoundCloud',
         key: 's',
@@ -79,11 +61,27 @@
         color: 'linear-gradient(135deg, #ff8800, #ffc800)',
       },
       {
+        category: 'Listen',
+        name: 'Deezer',
+        key: 'd',
+        url: 'https://www.deezer.com/en',
+        search: '/search/{}',
+        color: 'linear-gradient(217deg, #ff0000, #0000ff)',
+      },
+      {
         category: 'Watch',
         name: 'YouTube',
         key: 'y',
         url: 'https://youtube.com/feed/subscriptions',
         search: '/results?search_query={}',
+        color: 'linear-gradient(135deg, #cd201f, #cd4c1f)',
+      },
+      {
+        category: 'Watch',
+        name: 'Wonderful',
+        key: 'w',
+        url: 'https://wonderfulsubs.com/',
+        search: '/search?q={}',
         color: 'linear-gradient(135deg, #cd201f, #cd4c1f)',
       },
       {
@@ -134,10 +132,18 @@
      * - "DuckDuckGo" suggestions come from the duck duck go search api
      * - "History" suggestions come from your previously entered queries
      */
-    influencers: [
-      { name: 'Default', limit: 4 },
-      { name: 'History', limit: 1 },
-      { name: 'DuckDuckGo', limit: 4 },
+    influencers: [{
+        name: 'Default',
+        limit: 4
+      },
+      {
+        name: 'History',
+        limit: 1
+      },
+      {
+        name: 'DuckDuckGo',
+        limit: 4
+      },
     ],
 
     /**
@@ -146,8 +152,9 @@
     defaultSuggestions: {
       g: ['g/issues', 'g/pulls', 'gist.github.com'],
       l: ['l/#electronic+chill', 'l/#focus+instrumental', 'l/#piano+sleep'],
-      r: ['r/r/Brunei','r/r/unixporn', 'r/r/startpages', 'r/r/webdev', 'r/r/technology'],
+      r: ['r/r/Brunei', 'r/r/unixporn', 'r/r/startpages', 'r/r/webdev', 'r/r/technology'],
       s: ['s/you/likes', 's/discover/the-upload'],
+      d: ['d/search/superman','d/search/despacito']
     },
 
     /**
@@ -335,7 +342,7 @@
     z-index: 2;
   }
 
-  .search-form > div {
+  .search-form>div {
     width: 100%;
   }
 
@@ -531,12 +538,7 @@
 
 <div class="center"><time class="clock" id="clock"></time></div>
 
-<form
-  autocomplete="off"
-  class="center overlay search-form"
-  id="search-form"
-  spellcheck="false"
->
+<form autocomplete="off" class="center overlay search-form" id="search-form" spellcheck="false">
   <div>
     <input class="search-input" id="search-input" title="search" type="text" />
     <ul class="search-suggestions" id="search-suggestions"></ul>
@@ -688,7 +690,12 @@
 
     _buildListCommands(currentCategory) {
       return this._commands
-        .map(({ category, name, key, url }) => {
+        .map(({
+          category,
+          name,
+          key,
+          url
+        }) => {
           if (category === currentCategory) {
             return `
               <li class="command">
@@ -737,7 +744,11 @@
     }
 
     _getSearchPrefix(query) {
-      const { isSearch, key, split } = this._parseQuery(query);
+      const {
+        isSearch,
+        key,
+        split
+      } = this._parseQuery(query);
       return isSearch ? `${key}${split} ` : false;
     }
   }
@@ -745,7 +756,9 @@
 
 <script>
   class DefaultInfluencer extends Influencer {
-    constructor({ defaultSuggestions }) {
+    constructor({
+      defaultSuggestions
+    }) {
       super(...arguments);
       this._defaultSuggestions = defaultSuggestions;
     }
@@ -761,12 +774,16 @@
 
 <script>
   class DuckDuckGoInfluencer extends Influencer {
-    constructor({ queryParser }) {
+    constructor({
+      queryParser
+    }) {
       super(...arguments);
     }
 
     getSuggestions(rawQuery) {
-      const { query } = this._parseQuery(rawQuery);
+      const {
+        query
+      } = this._parseQuery(rawQuery);
       if (!query) return Promise.resolve([]);
 
       return new Promise(resolve => {
@@ -1029,7 +1046,10 @@
     parse(query) {
       if (this._cachedQuery === query) return this._cachedRes;
       this._cachedQuery = query;
-      const res = { query: query, split: null };
+      const res = {
+        query: query,
+        split: null
+      };
 
       if (this._urlRegex.test(query)) {
         const hasProtocol = this._protocolRegex.test(query);
@@ -1039,7 +1059,13 @@
         const splitSearch = trimmed.split(this._searchDelimiter);
         const splitPath = trimmed.split(this._pathDelimiter);
 
-        this._commands.some(({ category, key, name, search, url }) => {
+        this._commands.some(({
+          category,
+          key,
+          name,
+          search,
+          url
+        }) => {
           if (query === key) {
             res.key = key;
             res.isKey = true;
@@ -1081,8 +1107,8 @@
 
       return (
         commands
-          .filter(c => new URL(c.url).hostname.includes(domain))
-          .map(c => c.color)[0] || null
+        .filter(c => new URL(c.url).hostname.includes(domain))
+        .map(c => c.color)[0] || null
       );
     }
 
@@ -1156,7 +1182,9 @@
     _handleInput() {
       const newQuery = this._inputEl.value;
       const isHelp = newQuery === '?';
-      const { isKey } = this._parseQuery(newQuery);
+      const {
+        isKey
+      } = this._parseQuery(newQuery);
       this._inputElVal = newQuery;
       this._suggester.suggest(newQuery);
       this._setBackgroundFromQuery(newQuery);
@@ -1246,7 +1274,7 @@
       Default: DefaultInfluencer,
       DuckDuckGo: DuckDuckGoInfluencer,
       History: HistoryInfluencer,
-    }[influencerConfig.name]({
+    } [influencerConfig.name]({
       defaultSuggestions: CONFIG.defaultSuggestions,
       limit: influencerConfig.limit,
       parseQuery: queryParser.parse,
@@ -1279,4 +1307,3 @@
     twentyFourHour: CONFIG.twentyFourHourClock,
   });
 </script>
-
